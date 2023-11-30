@@ -1,0 +1,52 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+
+.video-container {
+    position: relative;
+}
+
+.gap-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: transparent; 
+    pointer-events: none; 
+}
+
+.topic {
+    
+    cursor: pointer;
+    padding: 10px 80px 10px 80px;
+    color: white;
+    border: 1px solid white;
+    background-color: black;
+    position: relative;
+    border-radius: 10px;
+    z-index: 1; 
+}
+
+.topic:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: black;
+}
+
+
+.dot-marker {
+    position: absolute;
+    bottom: 0;
+    transform: translateX(0%);
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 12px;
+    
+  
+    background-color: red; 
+    padding: 12px 2px 12px 2px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
