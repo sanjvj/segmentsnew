@@ -57,13 +57,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Add hover-over timing on the progress bar
+                player.el().addEventListener('mousemove', function (event) {
+                    const hoverPercent = player.controlBar.progressControl.seekBar.getPercent();
+                    const hoverTime = hoverPercent * player.duration();
+            
+                    // Remove existing markers before adding new ones
+                    const existingMarkers = player.controlBar.progressControl.el().getElementsByClassName('name');
+                    for (let i = 0; i < existingMarkers.length; i++) {
+                        existingMarkers[i].remove();
+                    }
+            
+                    for (let i = 0; i < segments.length; i++) {
+                        const marker = document.createElement('div');
+                        marker.className = 'name';
+                        marker.style.left = `${(i * segments[i].duration / player.duration()) * 100}%`;
+                        marker.innerHTML = `${segments[i].name}`;
+                        player.controlBar.progressControl.el().appendChild(marker);
+                    }
+                });
+
                 player.controlBar.progressControl.on('mousemove', function (event) {
                     const hoverPercent = player.controlBar.progressControl.seekBar.getPercent();
                     const hoverTime = hoverPercent * player.duration();
 
                     // Remove existing markers before adding new ones
                     const existingMarkers = player.controlBar.progressControl.el().getElementsByClassName('dot-marker');
-                    for (let i = 0; i < existingMarkers.length; i++) {
+                    for (let i = 1; i < existingMarkers.length; i++) {
                         existingMarkers[i].remove();
                     }
 
@@ -75,6 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             });
+            
+           
+            });
         }
     );
-});
