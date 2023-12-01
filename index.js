@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             // Position the tooltip dynamically with the cursor near the progress bar
                             const tooltipTop = event.clientY+320;
-                            const tooltipLeft = event.clientX;
+                            const tooltipLeft = event.clientX - 40;
 
                             tooltip.style.top = `${tooltipTop}px`;
                             tooltip.style.left = `${tooltipLeft}px`;
