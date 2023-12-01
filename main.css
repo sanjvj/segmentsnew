@@ -8,6 +8,7 @@ body {
 
 .video-container {
     position: relative;
+    margin-bottom: 50px;
 }
 
 .gap-marker {
@@ -21,7 +22,7 @@ body {
 .topic {
     
     cursor: pointer;
-    padding: 10px 80px 10px 80px;
+    padding: 10px 80px 25px 80px;
     color: white;
     border: 1px solid white;
     background-color: black;
@@ -37,27 +38,38 @@ body {
 }
 
 
+/* Add this CSS code to your stylesheet or in a <style> tag in the head of your HTML document */
+
+/* Style for the dot marker */
 .dot-marker {
     position: absolute;
-    bottom: 0;
-    transform: translateX(0%);
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 12px;    
-    background-color: #00000050; 
-    padding: 12px 2px 12px 2px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-}
-
-.name{
-    position: absolute;
-    bottom: 0;
+    height: 10px;
+    width: 10px;
+    background-color: black; 
+    border-radius: 50%;
     transform: translateX(-50%);
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: 12px;
-    color: white; 
- 
+    z-index: 1; 
+    padding: 3px 2px 3px 2px;
+}
+/* Style for the tooltip */
+.tooltip {
+    position: absolute;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.7); /* Change the background color as needed */
+    color: white; /* Change the text color as needed */
     border-radius: 4px;
+    display: none;
+    z-index: 1000;
+}
+/* Add a gap in the progress bar */
+.vjs-progress-holder::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%; /* Adjust the width of the gap as needed */
+    height: 100%;
+    background-color: transparent; /* Set the background color of the gap */
+    pointer-events: none; /* Allow interactions with elements behind the gap */
 }

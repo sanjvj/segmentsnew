@@ -1,17 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
     const video = document.getElementById('my-video');
     const topicsContainer = document.getElementById('topics-container');
+    let isHoveringProgressBar = false;
 
     const segments = [
-        { name: 'Introduction', duration: 40 },
-        { name: 'Main Content', duration: 20},
+        { name: 'Introduction', duration: 60 },
+        { name: 'Main Content', duration: 60 },
         { name: 'Pre-conclusion', duration: 60 },
         { name: 'Conclusion', duration: 60 },
-        
         // Add more segments as needed
     ];
 
-    // Create and append topic elements
+
     segments.forEach((segment, i) => {
         const topicElement = document.createElement('div');
         topicElement.className = 'topic';
@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', function () {
         topicsContainer.appendChild(topicElement);
     });
 
-    // Update the video time based on topic hover
-    topicsContainer.addEventListener('mouseup', function (event) {
-        const topicIndex = Array.from(topicsContainer.children).indexOf(event.target);
-        const hoverTime = topicIndex * segments[topicIndex].duration;
-        video.currentTime = hoverTime;
-    });
+    // Create a tooltip element
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    document.body.appendChild(tooltip);
 
+    // Create markers for each segment
+  
     var player = videojs(
         'my-video',
         {
@@ -56,26 +56,51 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log("event: ", event);
                 });
 
-                // Add hover-over timing on the progress bar
-                player.el().addEventListener('mousemove', function (event) {
-                    const hoverPercent = player.controlBar.progressControl.seekBar.getPercent();
-                    const hoverTime = hoverPercent * player.duration();
-            
-                    // Remove existing markers before adding new ones
-                    const existingMarkers = player.controlBar.progressControl.el().getElementsByClassName('name');
-                    for (let i = 0; i < existingMarkers.length; i++) {
-                        existingMarkers[i].remove();
-                    }
-            
-                    for (let i = 0; i < segments.length; i++) {
-                        const marker = document.createElement('div');
-                        marker.className = 'name';
-                        marker.style.left = `${(i * segments[i].duration / player.duration()) * 100}%`;
-                        marker.innerHTML = `${segments[i].name}`;
-                        player.controlBar.progressControl.el().appendChild(marker);
+                document.addEventListener('mousemove', function (event) {
+                    if (isHoveringProgressBar) {
+                        const progressRect = player.controlBar.progressControl.el().getBoundingClientRect();
+                        const hoverPercent = (event.clientX - progressRect.left) / progressRect.width;
+                        const hoverTime = hoverPercent * player.duration();
+
+                        let hoveredSegment = null;
+
+                        for (let i = 0; i < segments.length; i++) {
+                            if (hoverTime <= totalDuration(segments.slice(0, i + 1))) {
+                                hoveredSegment = segments[i];
+                                break;
+                            }
+                        }
+
+                        if (hoveredSegment) {
+                            // Update tooltip content with the segment name
+                            tooltip.textContent = hoveredSegment.name;
+
+                            // Position the tooltip dynamically with the cursor near the progress bar
+                            const tooltipTop = event.clientY+320;
+                            const tooltipLeft = event.clientX;
+
+                            tooltip.style.top = `${tooltipTop}px`;
+                            tooltip.style.left = `${tooltipLeft}px`;
+                            tooltip.style.display = 'block';
+                        } else {
+                            // Hide the tooltip when not hovering over a segment
+                            tooltip.style.display = 'none';
+                        }
                     }
                 });
 
+                // Set the flag when the mouse enters the progress bar
+                player.controlBar.progressControl.on('mouseover', function (event) {
+                    isHoveringProgressBar = true;
+                });
+
+                // Reset the flag when the mouse leaves the progress bar
+                player.controlBar.progressControl.on('mouseout', function (event) {
+                    isHoveringProgressBar = false;
+                    tooltip.style.display = 'none';
+                });
+
+                // Remove existing markers before adding new ones
                 player.controlBar.progressControl.on('mousemove', function (event) {
                     const hoverPercent = player.controlBar.progressControl.seekBar.getPercent();
                     const hoverTime = hoverPercent * player.duration();
@@ -94,8 +119,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             });
-            
-           
-            });
-        }
-    );
+        });
+});
+
+// Calculate the total duration of all segments
+function totalDuration(segments) {
+    return segments.reduce((total, segment) => total + segment.duration, 0);
+}
